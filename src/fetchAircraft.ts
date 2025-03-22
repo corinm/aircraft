@@ -6,6 +6,7 @@ import {
   Tar1090Aircraft,
   WithEmergencyMetadata,
   WithHexDbMetadata,
+  WithInterestingMetadata,
   WithMilitaryMetadata,
   isEmergency,
   isMilitary,
@@ -13,13 +14,18 @@ import {
 
 export const fetchAircraftData = async (
   tar1090Url: string,
-  hexDbUrl: string
+  hexDbUrl: string,
+  interestingIcaos: Set<string>
 ): Promise<EnrichedAircraft[]> => {
   const aircraftData = await fetchAircraftFromTar1090(tar1090Url);
   const withHexDbMetadata = await attachHexDbMetadata(hexDbUrl, aircraftData);
   const withIsEmergency = attachEmergencyMetadata(withHexDbMetadata);
   const withIsMilitary = attachMilitaryMetadata(withIsEmergency);
-  return withIsMilitary;
+  const withIsInteresting = attachIsInterestingMetadata(
+    interestingIcaos,
+    withIsMilitary
+  );
+  return withIsInteresting;
 };
 
 const fetchAircraftFromTar1090 = async (
@@ -101,5 +107,15 @@ const attachMilitaryMetadata = (
   return aircraftData.map((aircraft) => ({
     ...aircraft,
     isMilitary: isMilitary(aircraft),
+  }));
+};
+
+const attachIsInterestingMetadata = (
+  interestingIcaos: Set<string>,
+  aircraftData: WithMilitaryMetadata[]
+): WithInterestingMetadata[] => {
+  return aircraftData.map((a) => ({
+    ...a,
+    isInteresting: interestingIcaos.has(a.aiocHexCode),
   }));
 };
