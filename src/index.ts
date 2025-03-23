@@ -54,6 +54,8 @@ const getAircraftData = async () => {
     interestingAircraftDb
   );
 
+  console.log(`> ${aircraftData.length} aircraft found`);
+
   // const { byOwner, byMake } = summariseAircraft(aircraftData);
 
   // console.log(
