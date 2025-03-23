@@ -104,16 +104,14 @@ export const isMilitary = (aircraft: BaseAircraft | EnrichedAircraft) => {
   return isIoacHexCodeInMilitaryRange(aircraft.aiocHexCode);
 };
 
-export const printAircraft = (aircraft: EnrichedAircraft): void => {
+export const printAircraft = (aircraft: EnrichedAircraft): string => {
   const { aiocHexCode, adsbData, hexDbMetadata } = aircraft;
   const { flight } = adsbData;
   const RegisteredOwners = hexDbMetadata?.RegisteredOwners ?? "-";
   const Manufacturer = hexDbMetadata?.Manufacturer ?? "-";
   const ICAOTypeCode = hexDbMetadata?.ICAOTypeCode ?? "-";
 
-  console.log(
-    `${aiocHexCode} | ${
-      flight ?? "-"
-    } | ${RegisteredOwners} | ${Manufacturer} | ${ICAOTypeCode}`
-  );
+  return `${aiocHexCode} ${
+    flight?.trim() ?? "-"
+  } ${RegisteredOwners} ${Manufacturer} ${ICAOTypeCode}`;
 };
