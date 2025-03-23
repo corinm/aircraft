@@ -17,6 +17,7 @@
     "axios": "^1.8.4",
     "cli-table3": "^0.6.5",
     "csv-parser": "^3.2.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "node-cache": "^5.1.2"
   }
 }

@@ -15,8 +15,8 @@ export const sendNotification = async (
       }
     );
 
-    console.log("Notification sent:", response.data);
+    console.log("> Notification sent:", response.data);
   } catch (error) {
-    console.error("Error sending notification:", error);
+    console.error("> Error sending notification:", error);
   }
 };

@@ -1,5 +1,6 @@
 import path from "path";
 import * as dotenv from "dotenv";
+import NodeCache from "node-cache";
 
 import { fetchAircraftData } from "./fetchAircraft";
 import { fetchInterestingAircraft } from "./fetchInterestingAircraft";
@@ -37,7 +38,15 @@ if (!PUSHOVER_USER_KEY) {
 
 const pathToCsv = path.join(__dirname, "plane-alert-db", "plane-alert-db.csv");
 
+const interestingAircraftCache = new NodeCache({
+  stdTTL: 20 * 60,
+  checkperiod: 60,
+});
+
 const getAircraftData = async () => {
+  console.log("");
+  console.log("> Getting aircraft data");
+
   const interestingAircraftDb = await fetchInterestingAircraft(pathToCsv);
   const aircraftData = await fetchAircraftData(
     TAR1090_URL,
@@ -45,27 +54,55 @@ const getAircraftData = async () => {
     interestingAircraftDb
   );
 
-  const { byOwner, byMake } = summariseAircraft(aircraftData);
+  // const { byOwner, byMake } = summariseAircraft(aircraftData);
 
-  console.log(
-    createTableOfAircraftByOwner(byOwner, aircraftData.length).toString()
-  );
-  console.log(
-    createTableOfAircraftByMakeModel(byMake, aircraftData.length).toString()
-  );
-  console.log(createTableOfAircraftByInteresting(aircraftData).toString());
+  // console.log(
+  //   createTableOfAircraftByOwner(byOwner, aircraftData.length).toString()
+  // );
+  // console.log(
+  //   createTableOfAircraftByMakeModel(byMake, aircraftData.length).toString()
+  // );
+  // console.log(createTableOfAircraftByInteresting(aircraftData).toString());
 
   const interestingAircraft = aircraftData.filter((a) => a.isInteresting);
 
   if (interestingAircraft.length === 0) {
+    console.log("> No interesting aircraft");
     return;
   }
 
-  const message = `Interesting aircraft: ${interestingAircraft.map(
+  console.log("> Interesting aircraft found");
+
+  const newInterestingAircraft = interestingAircraft.filter(
+    (a) => !interestingAircraftCache.has(a.aiocHexCode)
+  );
+
+  if (newInterestingAircraft.length == 0) {
+    console.log("> No new interesting aircraft");
+    return;
+  }
+
+  console.log("> New interesting aircraft found");
+
+  newInterestingAircraft.forEach((a) =>
+    interestingAircraftCache.set(a.aiocHexCode, true)
+  );
+
+  console.log("> Sending notification");
+
+  const message = `Interesting aircraft: ${newInterestingAircraft.map(
     printAircraft
   )}`;
 
   sendNotification(PUSHOVER_APP_TOKEN, PUSHOVER_USER_KEY, message);
 };
 
-getAircraftData();
+const main = () => {
+  console.log("> Setting interval");
+  setInterval(getAircraftData, 60_000);
+
+  console.log("> One off invokation");
+  getAircraftData();
+};
+
+main();
