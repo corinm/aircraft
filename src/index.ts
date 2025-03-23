@@ -31,28 +31,37 @@ const getAircraftData = async () => {
 
   const { byOwner, byMake } = summariseAircraft(aircraftData);
 
+  // Owner
   const table = new CliTable3({
     head: ["Owner", "Count"],
   });
-
   for (const [owner, count] of Object.entries(byOwner)) {
     table.push([owner, count]);
   }
+  table.sort((a, b) => {
+    const a2 = a as [string, number];
+    const b2 = b as [string, number];
+    return b2[1] - a2[1];
+  });
   table.push(["Total", aircraftData.length]);
-
   console.log(table.toString());
 
+  // Make and model
   const table2 = new CliTable3({
     head: ["Make & Model", "Count"],
   });
-
   for (const [makeModel, count] of Object.entries(byMake)) {
     table2.push([makeModel, count]);
   }
+  table2.sort((a, b) => {
+    const a2 = a as [string, number];
+    const b2 = b as [string, number];
+    return b2[1] - a2[1];
+  });
   table2.push(["Total", aircraftData.length]);
-
   console.log(table2.toString());
 
+  // Type
   const table3 = new CliTable3({
     head: ["Type", "Count"],
   });
@@ -65,6 +74,8 @@ const getAircraftData = async () => {
   ]);
 
   console.log(table3.toString());
+
+  // TODO: Trigger notification if emergency / military / interesting present
 };
 
 getAircraftData();
