@@ -1,5 +1,3 @@
-import { isIoacHexCodeInMilitaryRange } from "./tar1090-db/military";
-
 export interface Tar1090Aircraft {
   hex: string;
   type: string;
@@ -101,17 +99,8 @@ export const isEmergency = (
 };
 
 export const isMilitary = (aircraft: BaseAircraft | EnrichedAircraft) => {
-  return isIoacHexCodeInMilitaryRange(aircraft.aiocHexCode);
+  // TODO: Implement
+  return false;
 };
 
-export const printAircraft = (aircraft: EnrichedAircraft): string => {
-  const { aiocHexCode, adsbData, hexDbMetadata } = aircraft;
-  const { flight } = adsbData;
-  const RegisteredOwners = hexDbMetadata?.RegisteredOwners ?? "-";
-  const Manufacturer = hexDbMetadata?.Manufacturer ?? "-";
-  const ICAOTypeCode = hexDbMetadata?.ICAOTypeCode ?? "-";
 
-  return `${aiocHexCode} ${
-    flight?.trim() ?? "-"
-  } ${RegisteredOwners} ${Manufacturer} ${ICAOTypeCode}`;
-};

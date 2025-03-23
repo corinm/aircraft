@@ -1,6 +1,6 @@
-[submodule "src/tar1090-db"]
-	path = src/tar1090-db
+[submodule "discovery/src/tar1090-db"]
+	path = discovery/src/tar1090-db
 	url = https://github.com/wiedehopf/tar1090-db.git
-[submodule "src/plane-alert-db"]
-	path = src/plane-alert-db
+[submodule "discovery/src/plane-alert-db"]
+	path = discovery/src/plane-alert-db
 	url = https://github.com/sdr-enthusiasts/plane-alert-db.git
