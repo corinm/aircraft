@@ -1,12 +1,13 @@
 {
-  "name": "aircraft-discovery",
+  "name": "aircraft-historian",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "scripts": {},
-  "keywords": [],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "author": "",
   "license": "ISC",
+  "description": "",
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
     "@types/node": "^22.13.11",
@@ -14,8 +15,6 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "axios": "^1.8.4",
-    "csv-parser": "^3.2.0",
     "dotenv": "^16.4.7",
     "nats": "^2.29.3",
     "pino": "^9.6.0"

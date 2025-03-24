@@ -13,3 +13,22 @@ services:
     build: ./notifier
     depends_on:
       - message-bus
+
+  mongodb:
+    image: mongo:8.0
+    container_name: mongodb
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+
+  historian:
+    build: ./historian
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
