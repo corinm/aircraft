@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const sendNotification = async (
+import { logger } from "./logger";
+
+export const sendPushoverNotification = async (
   pushoverToken: string,
   pushoverUser: string,
   message: string
@@ -15,8 +17,8 @@ export const sendNotification = async (
       }
     );
 
-    console.log("> Notification sent:", response.data);
+    logger.debug("Notification sent:", response.data);
   } catch (error) {
-    console.error("> Error sending notification:", error);
+    logger.error("> Error sending notification:", error);
   }
 };

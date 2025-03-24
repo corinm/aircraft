@@ -1,9 +1,10 @@
 import * as dotenv from "dotenv";
-import NodeCache from "node-cache";
+import pino from "pino";
 
-import { sendNotification } from "./notifications";
-import { EnrichedAircraft, printAircraft } from "./Aircraft";
+import { EnrichedAircraft } from "./Aircraft";
 import { connect, StringCodec } from "nats";
+import { onAircraft } from "./onAircraft";
+import { logger } from './logger'
 
 dotenv.config();
 
@@ -18,43 +19,18 @@ if (!PUSHOVER_USER_KEY) {
   process.exit(1);
 }
 
-const cache = new NodeCache({
-  stdTTL: 20 * 60,
-  checkperiod: 60,
-});
-
-const onAircraft = async (aircraft: EnrichedAircraft) => {
-  if (!aircraft.isInteresting) {
-    console.log("> Aircraft not interesting");
-    return;
-  }
-
-  console.log("> Interesting aircraft found");
-
-  if (cache.has(aircraft.aiocHexCode)) {
-    console.log("> Aircraft not new");
-    return;
-  }
-
-  console.log("> New interesting aircraft found");
-
-  cache.set(aircraft.aiocHexCode, true);
-
-  console.log("> Sending notification");
-
-  const message = `Interesting aircraft: ${printAircraft(aircraft)}`;
-
-  sendNotification(PUSHOVER_APP_TOKEN, PUSHOVER_USER_KEY, message);
-};
-
 const main = async () => {
+  logger.info('Starting up...')
+  logger.info('Connecting to NATS...')
   const nc = await connect({ servers: ['nats://message-bus:4222'] });
-  const sc = StringCodec();
+  logger.info('Successfully connected to NATS')
 
-  const sub = nc.subscribe('aircraft');
+  const stringCodec = StringCodec();
+  const subscription = nc.subscribe('aircraft');
 
-  for await (const m of sub) {
-    onAircraft(JSON.parse(sc.decode(m.data)))
+  for await (const message of subscription) {
+    const aircraft: EnrichedAircraft = JSON.parse(stringCodec.decode(message.data))
+    onAircraft(aircraft)
   }
 };
 
