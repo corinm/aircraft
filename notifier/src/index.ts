@@ -1,5 +1,4 @@
 import * as dotenv from "dotenv";
-import pino from "pino";
 
 import { EnrichedAircraft } from "./Aircraft";
 import { connect, StringCodec } from "nats";
@@ -12,10 +11,12 @@ const PUSHOVER_APP_TOKEN = process.env.PUSHOVER_APP_TOKEN;
 const PUSHOVER_USER_KEY = process.env.PUSHOVER_USER_KEY;
 
 if (!PUSHOVER_APP_TOKEN) {
+  logger.fatal('env var PUSHOVER_APP_TOKEN missing');
   process.exit(1);
 }
 
 if (!PUSHOVER_USER_KEY) {
+  logger.fatal('env var PUSHOVER_USER_KEY missing');
   process.exit(1);
 }
 
