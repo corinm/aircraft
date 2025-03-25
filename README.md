@@ -4,6 +4,13 @@ Combines local ADS-B data with other data sources and notifies about interesting
 
 ## Overview
 
+### Key features
+
+- Triggers Push Notifications when interesting aircraft are spotted by tar1090
+- Keeps track of all seen aircraft
+
+### Diagram
+
 ```mermaid
 flowchart TD
     subgraph NATS["NATS Message Bus"]
