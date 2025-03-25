@@ -7,12 +7,15 @@ import { AircraftModel } from './mongodb';
 export const onAircraft = async (aircraft: EnrichedAircraft) => {
   logger.info(`Aircraft: ${aircraft.aiocHexCode} ${aircraft.hexDbMetadata?.RegisteredOwners} ${aircraft.hexDbMetadata?.Manufacturer} ${aircraft.hexDbMetadata?.Type}`)
 
-  const aircraftRecord = new AircraftModel({
-    aiocHexCode: aircraft.aiocHexCode,
-    registeredOwners: aircraft.hexDbMetadata?.RegisteredOwners,
-    manufacturer: aircraft.hexDbMetadata?.Manufacturer,
-    model: aircraft.hexDbMetadata?.Type,
-  })
-
-  await aircraftRecord.save()
+  await AircraftModel.updateOne(
+    { aiocHexCode: aircraft.aiocHexCode },
+    { $set:
+      {
+        registeredOwners: aircraft.hexDbMetadata?.RegisteredOwners,
+        manufacturer: aircraft.hexDbMetadata?.Manufacturer,
+        model: aircraft.hexDbMetadata?.Type,
+      }
+    },
+    { upsert: true }
+  )
 }
