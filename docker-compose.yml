@@ -29,6 +29,7 @@ services:
   historian:
     build: ./historian
     depends_on:
+      - message-bus
       - mongodb
 
 volumes:
