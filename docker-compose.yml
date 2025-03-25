@@ -25,6 +25,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=root
       - MONGO_INITDB_DATABASE=aircraft-historian
+    command: --bind_ip_all
 
   historian:
     build: ./historian
