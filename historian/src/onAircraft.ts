@@ -1,5 +1,3 @@
-import { Mongoose } from 'mongoose'
-
 import { EnrichedAircraft } from "./Aircraft";
 import { logger } from "./logger";
 import { AircraftModel } from './mongodb';
@@ -13,8 +11,15 @@ export const onAircraft = async (aircraft: EnrichedAircraft) => {
       {
         registeredOwners: aircraft.hexDbMetadata?.RegisteredOwners,
         manufacturer: aircraft.hexDbMetadata?.Manufacturer,
-        model: aircraft.hexDbMetadata?.Type,
+        aircraftModel: aircraft.hexDbMetadata?.Type,
         isInteresting: aircraft.isInteresting,
+        interestingCivMilPolGov: aircraft.planeAlertDb?.CMPG ?? undefined,
+        interestingCategory: aircraft.planeAlertDb?.Category ?? undefined,
+        interestingTags: aircraft.isInteresting ? [
+          aircraft.planeAlertDb?.Tag1 ?? null,
+          aircraft.planeAlertDb?.Tag2 ?? null,
+          aircraft.planeAlertDb?.Tag3 ?? null,
+        ].filter(v => v !== null) : undefined
       }
     },
     { upsert: true }

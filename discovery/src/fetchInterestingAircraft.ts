@@ -1,30 +1,21 @@
 import * as fs from "fs";
 import * as csv from "csv-parser";
+import { PlaneAlertDbAircraftRecord } from "./Aircraft";
 
-interface AircraftRecord {
-  ICAO: string;
-  Registration: string;
-  Operator: string;
-  Type: string;
-  ICAOType: string;
-  CMPG: number;
-  Tag1: string;
-  Tag2: string;
-  Tag3: string;
-  Category: string;
-  Link: string;
+export interface InterestingAircraftDictionary {
+  [key: string]: PlaneAlertDbAircraftRecord;
 }
 
 export const fetchInterestingAircraft = async (
   pathToCsv: string
-): Promise<Set<string>> => {
+): Promise<InterestingAircraftDictionary> => {
   const aircraft = await readAircraftCSV(pathToCsv);
-  return new Set(aircraft.map((a) => a.ICAO).map((icao) => icao.toLowerCase()));
+  return aircraft
 };
 
-const readAircraftCSV = async (filePath: string): Promise<AircraftRecord[]> => {
+const readAircraftCSV = async (filePath: string): Promise<InterestingAircraftDictionary> => {
   return new Promise((resolve, reject) => {
-    const records: AircraftRecord[] = [];
+    const records: InterestingAircraftDictionary = {};
 
     fs.createReadStream(filePath)
       .pipe(
@@ -46,8 +37,8 @@ const readAircraftCSV = async (filePath: string): Promise<AircraftRecord[]> => {
         })
       )
       .on("data", (row) => {
-        const record: AircraftRecord = {
-          ICAO: row["$ICAO"],
+        const record: PlaneAlertDbAircraftRecord = {
+          ICAO: row["$ICAO"].toLowerCase(),
           Registration: row["$Registration"],
           Operator: row["$Operator"],
           Type: row["$Type"],
@@ -59,7 +50,7 @@ const readAircraftCSV = async (filePath: string): Promise<AircraftRecord[]> => {
           Category: row["Category"],
           Link: row["$#Link"],
         };
-        records.push(record);
+        records[record.ICAO] = record
       })
       .on("end", () => {
         resolve(records);

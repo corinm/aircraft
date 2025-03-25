@@ -2,8 +2,9 @@ import * as dotenv from "dotenv";
 import NodeCache from "node-cache";
 
 import { sendPushoverNotification } from "./notifications";
-import { EnrichedAircraft, printAircraft } from "./Aircraft";
+import { EnrichedAircraft } from "./Aircraft";
 import { logger } from './logger'
+import { printAircraft } from "./printAircraft";
 
 dotenv.config();
 

@@ -60,6 +60,20 @@ export interface HexDbAircraftMetadata {
   Type: string;
 }
 
+export interface PlaneAlertDbAircraftRecord {
+  ICAO: string;
+  Registration: string;
+  Operator: string;
+  Type: string;
+  ICAOType: string;
+  CMPG: number;
+  Tag1: string;
+  Tag2: string;
+  Tag3: string;
+  Category: string;
+  Link: string;
+}
+
 export interface BaseAircraft {
   aiocHexCode: string;
   adsbData: Tar1090Aircraft;
@@ -80,18 +94,26 @@ export interface WithMilitaryMetadata extends WithEmergencyMetadata {
 
 export interface WithInterestingMetadata extends WithMilitaryMetadata {
   isInteresting: boolean;
+  planeAlertDb: PlaneAlertDbAircraftRecord | null;
 }
 
 export type EnrichedAircraft = WithInterestingMetadata;
 
-export const printAircraft = (aircraft: EnrichedAircraft): string => {
-  const { aiocHexCode, adsbData, hexDbMetadata } = aircraft;
-  const { flight } = adsbData;
-  const RegisteredOwners = hexDbMetadata?.RegisteredOwners ?? "-";
-  const Manufacturer = hexDbMetadata?.Manufacturer ?? "-";
-  const ICAOTypeCode = hexDbMetadata?.ICAOTypeCode ?? "-";
+export const isEmergency = (
+  aircraft: BaseAircraft | EnrichedAircraft
+): boolean => {
+  if (aircraft.adsbData.emergency === undefined) {
+    return false;
+  }
 
-  return `${aiocHexCode} ${
-    flight?.trim() ?? "-"
-  } ${RegisteredOwners} ${Manufacturer} ${ICAOTypeCode}`;
+  if (aircraft.adsbData.emergency == "none") {
+    return false;
+  }
+
+  return true;
+};
+
+export const isMilitary = (aircraft: BaseAircraft | EnrichedAircraft) => {
+  // TODO: Implement
+  return false;
 };

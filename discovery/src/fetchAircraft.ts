@@ -11,18 +11,19 @@ import {
   isEmergency,
   isMilitary,
 } from "./Aircraft";
+import { InterestingAircraftDictionary } from "./fetchInterestingAircraft";
 
 export const fetchAircraftData = async (
   tar1090Url: string,
   hexDbUrl: string,
-  interestingIcaos: Set<string>
+  interestingAircraft: InterestingAircraftDictionary
 ): Promise<EnrichedAircraft[]> => {
   const aircraftData = await fetchAircraftFromTar1090(tar1090Url);
   const withHexDbMetadata = await attachHexDbMetadata(hexDbUrl, aircraftData);
   const withIsEmergency = attachEmergencyMetadata(withHexDbMetadata);
   const withIsMilitary = attachMilitaryMetadata(withIsEmergency);
   const withIsInteresting = attachIsInterestingMetadata(
-    interestingIcaos,
+    interestingAircraft,
     withIsMilitary
   );
   return withIsInteresting;
@@ -111,11 +112,12 @@ const attachMilitaryMetadata = (
 };
 
 const attachIsInterestingMetadata = (
-  interestingIcaos: Set<string>,
+  interestingAircraft: InterestingAircraftDictionary,
   aircraftData: WithMilitaryMetadata[]
 ): WithInterestingMetadata[] => {
   return aircraftData.map((a) => ({
     ...a,
-    isInteresting: interestingIcaos.has(a.aiocHexCode),
+    isInteresting: !!interestingAircraft[a.aiocHexCode],
+    planeAlertDb: interestingAircraft[a.aiocHexCode] ?? null,
   }));
 };
