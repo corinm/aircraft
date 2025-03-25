@@ -14,6 +14,7 @@ export const onAircraft = async (aircraft: EnrichedAircraft) => {
         registeredOwners: aircraft.hexDbMetadata?.RegisteredOwners,
         manufacturer: aircraft.hexDbMetadata?.Manufacturer,
         model: aircraft.hexDbMetadata?.Type,
+        isInteresting: aircraft.isInteresting,
       }
     },
     { upsert: true }
