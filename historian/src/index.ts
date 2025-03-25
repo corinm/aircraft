@@ -21,7 +21,7 @@ if (!MONGODB_PASSWORD) {
   process.exit(1);
 }
 
-const MONGODB_URI = 'mongodb://mongodb:27017/aircraft-historian'
+const MONGODB_URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:27017/aircraft-historian`
 
 const main = async () => {
   logger.info('Starting up...')
@@ -30,8 +30,7 @@ const main = async () => {
   logger.info('Successfully connected to NATS')
 
   logger.info('Connecting to MongoDB...')
-  await mongoose.connect(MONGODB_URI, { user: MONGODB_USER, pass: MONGODB_PASSWORD })
-
+  await mongoose.connect(MONGODB_URI, { authSource: 'admin' })
   logger.info('Successfully connected to MongoDB')
 
   const stringCodec = StringCodec();
@@ -39,7 +38,7 @@ const main = async () => {
 
   for await (const message of subscription) {
     const aircraft: EnrichedAircraft = JSON.parse(stringCodec.decode(message.data))
-    onAircraft(mongoose, aircraft)
+    onAircraft(aircraft)
   }
 };
 

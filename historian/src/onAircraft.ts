@@ -4,7 +4,7 @@ import { EnrichedAircraft } from "./Aircraft";
 import { logger } from "./logger";
 import { AircraftModel } from './mongodb';
 
-export const onAircraft = async (mongoose: Mongoose, aircraft: EnrichedAircraft) => {
+export const onAircraft = async (aircraft: EnrichedAircraft) => {
   logger.info(`Aircraft: ${aircraft.aiocHexCode} ${aircraft.hexDbMetadata?.RegisteredOwners} ${aircraft.hexDbMetadata?.Manufacturer} ${aircraft.hexDbMetadata?.Type}`)
 
   const aircraftRecord = new AircraftModel({
