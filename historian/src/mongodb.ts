@@ -20,6 +20,6 @@ const aircraftSchema = new Schema<Aircraft>({
   interestingCivMilPolGov: { type: String, required: false },
   interestingCategory: { type: String, required: false },
   interestingTags: { type: [String], required: false }
-});
+}, { collection: "aircraft" });
   
 export const AircraftModel = mongoose.model('Aircraft', aircraftSchema);
