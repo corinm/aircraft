@@ -25,6 +25,8 @@ flowchart TD
     Keeps track of all aircraft ever seen`"]
     Pushover["Pushover"]
     MongoDB["MongoDB"]
+    Stats["`**Stats Service**`"]
+    User["`**User**`"]
 
     Discovery -->|Polls for currently visible aircraft| Readsb
     Discovery -->|Publishes visible aircraft to| DMessage
@@ -33,6 +35,10 @@ flowchart TD
 
     Notifier -->|Uses HTTP API to send Push Notifications| Pushover
     Historian -->|Stores all seen aircraft in| MongoDB
+
+    User -->|Uses HTTP API| Stats
+    Stats -->|Queries| MongoDB
+
 ```
 
 ## Getting started
