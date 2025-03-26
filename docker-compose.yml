@@ -33,5 +33,13 @@ services:
       - message-bus
       - mongodb
 
+  stats:
+    build: ./stats
+    ports:
+      - "8000:80"
+    depends_on:
+      - message-bus
+      - mongodb
+
 volumes:
   mongodb_data:
